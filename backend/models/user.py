@@ -67,3 +67,8 @@ class User(db.Model):
         lazy="select",
         cascade="all, delete-orphan"
     )
+    complaints = db.relationship(
+    "Complaint",
+    back_populates="citizen",
+    lazy=True
+    )

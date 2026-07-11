@@ -132,3 +132,100 @@ Error Response:
   * 404 - Not Found
   * 409 - Conflict
   * 500 - Internal Server Error
+
+# Complaint Module
+
+## 1. Complaint Creation
+
+* Citizens can submit complaints through a secured API.
+* Every complaint is associated with the authenticated citizen.
+* Each complaint is assigned a unique complaint number (e.g., `CP000001`).
+
+---
+
+## 2. Complaint Information
+
+Each complaint contains:
+
+* Complaint Number
+* Title
+* Description
+* Latitude
+* Longitude
+* Status
+* Processed Flag
+* Created At
+* Updated At
+
+---
+
+## 3. Complaint Tracking
+
+Implemented APIs to:
+
+* Create a complaint
+* View all complaints submitted by the authenticated citizen
+* View a specific complaint by its ID
+
+---
+
+## 4. Complaint Ownership
+
+* Citizens can access only their own complaints.
+* Unauthorized access to another citizen's complaint is restricted.
+
+---
+
+## 5. Request Validation
+
+The following validations are performed before processing a complaint:
+
+* Required field validation
+* Title length validation
+* Description length validation
+* Latitude validation
+* Longitude validation
+
+---
+
+## 6. Business Logic
+
+The Service layer is responsible for:
+
+* Generating unique complaint numbers
+* Creating complaints
+* Retrieving citizen complaints
+* Retrieving complaint details
+* Validating complaint ownership
+
+---
+
+## 7. Repository Operations
+
+The Complaint Repository provides:
+
+* Create Complaint
+* Get Latest Complaint
+* Get Complaint by ID
+* Get Complaints by Citizen ID
+* Update Complaint
+
+---
+
+## 8. API Endpoints
+
+| Method | Endpoint                         | Description                                          |
+| ------ | -------------------------------- | ---------------------------------------------------- |
+| POST   | `/api/complaints`                | Create a new complaint                               |
+| GET    | `/api/complaints/my`             | Retrieve all complaints of the authenticated citizen |
+| GET    | `/api/complaints/{complaint_id}` | Retrieve details of a specific complaint             |
+
+---
+
+## 9. Security
+
+* JWT Authentication is required for all Complaint APIs.
+* Role-Based Access Control (RBAC) is enforced.
+* Complaint ownership is verified before returning complaint details.
+
+---

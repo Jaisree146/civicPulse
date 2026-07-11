@@ -5,6 +5,7 @@ from config.db import db
 from config.settings import Settings
 from handlers.error_handler import register_error_handlers
 from routes.auth_routes import auth_bp
+from routes.complaint_routes import complaint_bp
 from models.department import Department
 from models.user import User
 from models.role import Role
@@ -12,7 +13,6 @@ migrate = Migrate()
 
 
 def create_app():
-
     app = Flask(__name__)
 
     app.config.from_object(Settings)
@@ -22,7 +22,9 @@ def create_app():
     migrate.init_app(app, db)
 
     app.register_blueprint(auth_bp)
-
+    app.register_blueprint(
+    complaint_bp
+)
     register_error_handlers(app)
 
     return app

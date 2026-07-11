@@ -28,25 +28,16 @@ class AuthService:
         existing_user = UserRepository.get_by_email(email)
 
         if existing_user:
-            logger.warning(
-                "Registration failed. Email already exists: %s",
-                email
-            )
+            logger.warning("Registration failed. Email already exists: %s",email)
             raise UserAlreadyExistsException()
 
-        citizen_role = RoleRepository.get_by_name(
-            Roles.CITIZEN
-        )
+        citizen_role = RoleRepository.get_by_name(Roles.CITIZEN)
 
         if citizen_role is None:
-            logger.error(
-                "Citizen role not found."
-            )
+            logger.error("Citizen role not found.")
             raise RoleNotFoundException()
 
-        password_hash = PasswordManager.hash_password(
-            password
-        )
+        password_hash = PasswordManager.hash_password(password)
 
         user = User(
             full_name=full_name,
@@ -59,10 +50,7 @@ class AuthService:
 
         created_user = UserRepository.create(user)
 
-        logger.info(
-            "User registered successfully. User ID: %s",
-            created_user.id
-        )
+        logger.info("User registered successfully. User ID: %s", created_user.id)
 
         return created_user
 
@@ -72,20 +60,11 @@ class AuthService:
         user = UserRepository.get_by_email(email)
 
         if user is None:
-            logger.warning(
-                "Login failed. User not found: %s",
-                email
-            )
+            logger.warning("Login failed. User not found: %s", email)
             raise InvalidCredentialsException()
 
-        if not PasswordManager.verify_password(
-            password,
-            user.password_hash
-        ):
-            logger.warning(
-                "Login failed. Invalid password for: %s",
-                email
-            )
+        if not PasswordManager.verify_password(password,user.password_hash):
+            logger.warning("Login failed. Invalid password for: %s", email)
             raise InvalidCredentialsException()
 
         existing_token = (
