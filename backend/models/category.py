@@ -3,9 +3,9 @@ from datetime import datetime
 from config.db import db
 
 
-class Department(db.Model):
+class Category(db.Model):
 
-    __tablename__ = "departments"
+    __tablename__ = "categories"
 
     id = db.Column(
         db.Integer,
@@ -13,7 +13,7 @@ class Department(db.Model):
         autoincrement=True
     )
 
-    department_name = db.Column(
+    category_name = db.Column(
         db.String(100),
         nullable=False,
         unique=True
@@ -36,9 +36,8 @@ class Department(db.Model):
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
-
-    users = db.relationship(
-        "User",
-        back_populates="department",
-        lazy=True
+    issues = db.relationship(
+    "Issue",
+    back_populates="category",
+    lazy=True
     )

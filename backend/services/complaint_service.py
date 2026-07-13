@@ -82,3 +82,44 @@ class ComplaintService:
             next_id = last_complaint.id + 1
 
         return f"CP{next_id:06d}"
+
+    @staticmethod
+    def get_unprocessed():
+
+        return ComplaintRepository.get_unprocessed()
+
+
+    @staticmethod
+    def link_issue(
+    complaint_id,
+    issue_id
+    ):
+
+        complaint = ComplaintRepository.get_by_id(
+            complaint_id
+        )
+
+        if complaint is None:
+            raise ComplaintNotFoundException()
+
+        return ComplaintRepository.link_issue(
+            complaint,
+            issue_id
+        )
+
+
+    @staticmethod
+    def mark_processed(
+        complaint_id
+    ):
+
+        complaint = ComplaintRepository.get_by_id(
+            complaint_id
+        )
+
+        if complaint is None:
+            raise ComplaintNotFoundException()
+
+        return ComplaintRepository.mark_processed(
+            complaint
+        )
