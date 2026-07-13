@@ -2,7 +2,7 @@ from datetime import datetime
 
 from config.db import db
 
-
+from common.constants import ComplaintStatus
 class Complaint(db.Model):
 
     __tablename__ = "complaints"
@@ -48,7 +48,7 @@ class Complaint(db.Model):
     status = db.Column(
         db.String(30),
         nullable=False,
-        default="Submitted"
+        default=ComplaintStatus.SUBMITTED
     )
 
     processed = db.Column(
@@ -74,3 +74,16 @@ class Complaint(db.Model):
         "User",
         back_populates="complaints"
     )
+    issue_id = db.Column(
+    db.Integer,
+    db.ForeignKey("issues.id"),
+    nullable=True
+    )
+
+    issue = db.relationship(
+    "Issue",
+    back_populates="complaints",
+    lazy=True
+    )
+
+    
