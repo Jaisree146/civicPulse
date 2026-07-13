@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from config.db import db
-
 from common.constants import ComplaintStatus
 class Complaint(db.Model):
 
