@@ -84,4 +84,12 @@ class Complaint(db.Model):
     lazy=True
     )
 
+    @property
+    def is_processed(self):
+        return self.processed
+
+    @is_processed.setter
+    def is_processed(self, value):
+        self.processed = value
+
     

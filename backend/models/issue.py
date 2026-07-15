@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from config.db import db
-
 from common.constants import IssueStatus
+from sqlalchemy import JSON
+
 class Issue(db.Model):
 
     __tablename__ = "issues"
@@ -31,9 +32,27 @@ class Issue(db.Model):
         nullable=True
     )
 
+    suggested_department_id = db.Column(
+        db.Integer,
+        db.ForeignKey("departments.id"),
+        nullable=True
+    )
+
     summary = db.Column(
         db.Text,
         nullable=False
+    )
+
+    latitude = db.Column(
+        db.Float,
+        nullable=False,
+        index=True
+    )
+
+    longitude = db.Column(
+        db.Float,
+        nullable=False,
+        index=True
     )
 
     priority = db.Column(
@@ -48,11 +67,14 @@ class Issue(db.Model):
     )
 
     status = db.Column(
-    db.String(30),
-    nullable=False,
-    default=IssueStatus.PENDING_REVIEW
+        db.String(30),
+        nullable=False,
+        default=IssueStatus.PENDING_REVIEW
     )
-
+    embedding = db.Column(
+    JSON,
+    nullable=False
+    )
     created_at = db.Column(
         db.DateTime,
         nullable=False,
@@ -66,6 +88,10 @@ class Issue(db.Model):
         onupdate=datetime.utcnow
     )
 
+    sla_notification_sent = db.Column(
+    db.Boolean,
+    default=False
+    )
     category = db.relationship(
         "Category",
         back_populates="issues",
@@ -74,6 +100,13 @@ class Issue(db.Model):
 
     department = db.relationship(
         "Department",
+        foreign_keys=[department_id],
+        lazy=True
+    )
+
+    suggested_department = db.relationship(
+        "Department",
+        foreign_keys=[suggested_department_id],
         lazy=True
     )
 
@@ -82,4 +115,3 @@ class Issue(db.Model):
         back_populates="issue",
         lazy=True
     )
-    

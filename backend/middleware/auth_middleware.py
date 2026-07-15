@@ -33,6 +33,9 @@ def token_required(func):
 
         g.current_user = user
 
-        return func(*args, **kwargs)
+        return func(
+            *args,
+            **kwargs
+        )
 
     return wrapper

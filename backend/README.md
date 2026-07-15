@@ -210,15 +210,6 @@ The Complaint Repository provides:
 * Get Complaints by Citizen ID
 * Update Complaint
 
----
-
-## 8. API Endpoints
-
-| Method | Endpoint                         | Description                                          |
-| ------ | -------------------------------- | ---------------------------------------------------- |
-| POST   | `/api/complaints`                | Create a new complaint                               |
-| GET    | `/api/complaints/my`             | Retrieve all complaints of the authenticated citizen |
-| GET    | `/api/complaints/{complaint_id}` | Retrieve details of a specific complaint             |
 
 ---
 
@@ -235,6 +226,7 @@ The Complaint Repository provides:
 Issues represent unique civic problems identified from one or more complaints.
 Each issue is assigned a unique issue number (e.g., ISS000001).
 Multiple complaints can be linked to the same issue.
+
 2. Issue Information
 
 Each issue contains:
@@ -275,16 +267,7 @@ Get Pending Review Issues
 Get Issues by Department
 Update Issue
 
-6. API Endpoints
-Method	        Endpoint	                     Description
-GET	          api/issues	             Retrieve all issues (Municipal Officer)
-GET	         /api/issues/pending	     Retrieve issues pending review
-GET	         /api/issues/{issue_id}	   Retrieve issue details
-GET	         /api/issues/my	           Retrieve issues assigned to the logged-in department
-PUT	    /api/issues/{issue_id}/assign  Assign issue to a department
-PUT	    /api/issues/{issue_id}/status	 Update issue status
-
-7. Security
+6. Security
 JWT Authentication is required.
 Municipal Officers can:
 View all issues
@@ -293,6 +276,8 @@ Assign departments
 Department Officers can:
 View assigned issues
 Update issue status
+
+
 
 ## Dashboard Module
 
@@ -305,6 +290,8 @@ Three dashboards are implemented:
 Citizen Dashboard
 Municipal Officer Dashboard
 Department Officer Dashboard
+
+
 2. Citizen Dashboard
 
 Displays:
@@ -312,18 +299,24 @@ Displays:
 Total Complaints
 Resolved Complaints
 Five most recent complaints
+
+
 3. Municipal Dashboard
 
 Displays:
 
 Total Issues
 Pending Review Issues
+
+
 4. Department Dashboard
 
 Displays:
 
 Assigned Issues
 Resolved Issues
+
+
 5. Database Queries
 
 Dashboard statistics are generated using:
@@ -335,19 +328,15 @@ Filtering
 Ordering
 Limiting results
 
-6. API Endpoints
-Method	     Endpoint	                  Description
-GET	    /api/dashboard/citizen	    Citizen dashboard
-GET	    /api/dashboard/municipal	  Municipal Officer dashboard
-GET	    /api/dashboard/department	  Department Officer dashboard
 
-7. Security
+6. Security
 JWT Authentication is required.
 Dashboard access is restricted using Role-Based Access Control (RBAC).
 Each role can access only its respective dashboard.
+
+
 Master Data
 1. Roles
-
 The following roles are predefined:
 
 Citizen
@@ -355,7 +344,6 @@ Municipal Officer
 Department Officer
 
 2. Departments
-
 Departments are pre-populated using seed scripts.
 
 Examples include:
@@ -367,9 +355,7 @@ Solid Waste Management
 Street Lighting
 
 3. Categories
-
 Complaint categories are also seeded.
-
 Examples include:
 
 Road Damage
@@ -379,9 +365,42 @@ Drainage Issue
 Street Light Failure
 
 4. Seed Scripts
-
 Implemented database seed scripts for:
 
 Roles
 Departments
 Categories
+
+AI Chat Assistant Module
+Overview
+
+The AI Chat Assistant is implemented as a Skill-Based Agent using LangGraph. It enables citizens to interact with the system using natural language to check complaint status, retrieve municipal policies, receive complaint registration guidance, and ask general civic-related questions.
+
+The assistant uses the Google Gemini API to generate natural-language responses based on structured information retrieved from backend services.
+
+Supported Skills
+Complaint Status
+Municipal Policy Query
+Complaint Registration Guidance
+General Assistance
+Key Design Decisions
+The assistant follows a Skill-Based Architecture, where each business capability is implemented as an independent skill, making the system modular and easier to extend.
+LangGraph orchestrates the execution flow by routing requests to the appropriate skill based on the detected user intent.
+Google Gemini API is used to generate clear and user-friendly responses from structured backend data.
+Retrieval-Augmented Generation (RAG) is used to retrieve municipal policies dynamically instead of embedding policy information directly into prompts, improving maintainability and response accuracy.
+Complaint SLA Monitoring is performed automatically. If a complaint exceeds its expected resolution time, the corresponding department is notified, and the notification status is recorded to prevent duplicate notifications.
+Critical business operations such as complaint retrieval, duplicate detection, authorization, SLA evaluation, and department notifications are implemented in backend services instead of the LLM, ensuring deterministic and reliable behavior.
+The LLM is responsible only for natural-language response generation and is not involved in business decision-making.
+LangGraph Memory preserves conversation context, enabling seamless multi-turn interactions without requiring users to repeat previously shared information.
+Duplicate Detection Module
+Overview
+
+The Duplicate Detection module identifies whether a newly submitted complaint corresponds to an existing civic issue. Instead of creating duplicate issues for the same real-world problem, the system links related complaints to a single Issue, reducing redundant municipal work and improving issue tracking.
+
+Key Design Decisions
+Duplicate detection is performed against Issues rather than individual complaints, allowing multiple complaints to be associated with a single civic problem.
+Google Gemini Embedding API (gemini-embedding-001) is used to convert complaint descriptions into vector embeddings for semantic similarity comparison.
+FAISS is used as the vector database to perform efficient nearest-neighbor similarity searches.
+A configurable similarity threshold determines whether a complaint should be linked to an existing issue or result in the creation of a new issue.
+When a duplicate is identified, the complaint is linked to the existing issue and the issue's report count is incremented instead of creating another issue record.
+This design minimizes duplicate municipal work orders while preserving individual complaint records for each citizen.

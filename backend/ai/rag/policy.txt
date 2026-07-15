@@ -1,0 +1,25 @@
+import axiosInstance from "./axios";
+import { tokenService } from "../services/tokenService";
+import { API_ENDPOINTS } from "./endpoints";
+
+let isRefreshing = false;
+
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (
+  error: unknown,
+  token: string | null
+) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else if (token) {
+      promise.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};

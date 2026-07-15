@@ -13,6 +13,7 @@ class Settings:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     FRONTEND_URL = os.getenv("FRONTEND_URL")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     SQLALCHEMY_DATABASE_URI = (
         f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
         f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"

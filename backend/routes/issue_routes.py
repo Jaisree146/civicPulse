@@ -59,6 +59,20 @@ issue_bp.route(
     )
 )
 
+# Confirm AI department suggestion
+issue_bp.route(
+    "/<int:issue_id>/confirm-department",
+    methods=["PUT"]
+)(
+    jwt_required(
+        roles_required(
+            Roles.MUNICIPAL_OFFICER
+        )(
+            IssueController.confirm_department_suggestion
+        )
+    )
+)
+
 
 # Common APIs
 
