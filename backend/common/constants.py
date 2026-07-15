@@ -7,7 +7,8 @@ class Roles:
 class TokenType:
     ACCESS = "access"
     REFRESH = "refresh"
-    
+
+
 class ComplaintStatus:
 
     SUBMITTED = "Submitted"
@@ -35,7 +36,8 @@ class Priority:
     HIGH = "High"
 
     CRITICAL = "Critical"
-    
+
+
 class NumberPrefix:
 
     COMPLAINT = "CP"

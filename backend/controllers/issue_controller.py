@@ -27,6 +27,11 @@ class IssueController:
                         issue.department.department_name
                         if issue.department
                         else None
+                    ),
+                    "suggested_department": (
+                        issue.suggested_department.department_name
+                        if issue.suggested_department
+                        else None
                     )
                 }
                 for issue in issues
@@ -75,6 +80,11 @@ class IssueController:
                     if issue.department
                     else None
                 ),
+                "suggested_department": (
+                    issue.suggested_department.department_name
+                    if issue.suggested_department
+                    else None
+                ),
                 "created_at": issue.created_at,
                 "updated_at": issue.updated_at
             }
@@ -96,6 +106,27 @@ class IssueController:
 
         return ApiResponse.success(
             message="Department assigned successfully.",
+            data={
+                "issue_id": issue.id,
+                "department_id": issue.department_id,
+                "status": issue.status
+            }
+        )
+
+    @staticmethod
+    def confirm_department_suggestion(issue_id):
+
+        data = request.get_json() or {}
+
+        department_id = data.get("department_id")
+
+        issue = IssueService.confirm_department_suggestion(
+            issue_id=issue_id,
+            department_id=department_id
+        )
+
+        return ApiResponse.success(
+            message="Department suggestion confirmed successfully.",
             data={
                 "issue_id": issue.id,
                 "department_id": issue.department_id,
