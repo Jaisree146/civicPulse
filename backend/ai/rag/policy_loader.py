@@ -19,8 +19,6 @@ class PolicyLoader:
 
     @staticmethod
     def load():
-
-        # Already indexed
         if (
             PolicyFaissService.exists()
             and

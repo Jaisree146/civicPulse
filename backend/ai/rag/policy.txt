@@ -1,32 +1,25 @@
-Road Damage
+import axiosInstance from "./axios";
+import { tokenService } from "../services/tokenService";
+import { API_ENDPOINTS } from "./endpoints";
 
-Complaints related to potholes and damaged roads
-should be resolved within 10 working days.
+let isRefreshing = false;
 
-------------------------------------------------
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
 
-Drainage
+const processQueue = (
+  error: unknown,
+  token: string | null
+) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else if (token) {
+      promise.resolve(token);
+    }
+  });
 
-Drainage blockage complaints should be resolved
-within 7 working days.
-
-------------------------------------------------
-
-Water Leakage
-
-Water leakage complaints should be be resolved
-within 5 working days.
-
-------------------------------------------------
-
-Street Light
-
-Street light complaints should be resolved
-within 3 working days.
-
-------------------------------------------------
-
-Garbage
-
-Garbage complaints should be resolved
-within 2 working days.
+  failedQueue = [];
+};

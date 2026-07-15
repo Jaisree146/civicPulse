@@ -25,10 +25,6 @@ workflow = StateGraph(
 )
 
 
-# -------------------------
-# Register Nodes
-# -------------------------
-
 workflow.add_node(
     "intent",
     intent_node
@@ -60,9 +56,6 @@ workflow.add_node(
 )
 
 
-# -------------------------
-# START
-# -------------------------
 
 workflow.add_edge(
     START,
@@ -70,9 +63,6 @@ workflow.add_edge(
 )
 
 
-# -------------------------
-# Intent Routing
-# -------------------------
 
 workflow.add_conditional_edges(
 
@@ -98,12 +88,6 @@ workflow.add_conditional_edges(
 
 )
 
-
-# -------------------------
-# Every Skill
-# goes to Response Node
-# -------------------------
-
 workflow.add_edge(
     "complaint_status",
     "response"
@@ -125,9 +109,6 @@ workflow.add_edge(
 )
 
 
-# -------------------------
-# Finish
-# -------------------------
 
 workflow.add_edge(
     "response",

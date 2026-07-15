@@ -72,8 +72,6 @@ def response_node(
     state: AgentState
 ) -> AgentState:
 
-    # If any skill has already prepared the response,
-    # do not call Gemini again.
     if state["response"]:
 
         return state

@@ -4,10 +4,7 @@ from ai.agent.agent import CivicPulseAgent
 class ChatService:
 
     @staticmethod
-    def chat(
-        current_user,
-        message: str
-    ):
+    def chat(current_user,message: str):
 
         return CivicPulseAgent.invoke(
 
