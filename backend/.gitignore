@@ -20,3 +20,5 @@ htmlcov/
 .mypy_cache/
 .vscode/
 Thumbs.db
+../.vscode/
+../storage/
