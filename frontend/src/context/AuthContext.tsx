@@ -32,7 +32,10 @@ export function AuthProvider({ children }: Props) {
         setAccessToken(access_token);
         setUser(userData);
         tokenService.setToken(access_token);
-      } catch (error) {
+      } catch (error) {    
+  setAccessToken(null);
+  setUser(null);
+  tokenService.clearToken();
 
       } finally {
         setIsLoading(false);

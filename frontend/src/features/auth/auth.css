@@ -1,0 +1,454 @@
+
+/* ============ PAGE ============ */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.25rem;
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  background: var(--color-paper-100);
+  position: relative;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 64rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* ============ SHELL: split panel ============ */
+.auth-shell {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  min-height: 32rem;
+  background: var(--color-paper-50);
+  border: 1px solid var(--color-paper-200);
+  box-shadow:
+    0 1px 2px rgba(11, 26, 51, 0.04),
+    0 24px 48px -24px rgba(11, 26, 51, 0.25);
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============ BRAND / AUTHORITY PANEL (navy) ============ */
+.auth-brand-panel {
+  position: relative;
+  background: linear-gradient(165deg, var(--color-navy-900), var(--color-navy-950) 70%);
+  color: var(--color-paper-100);
+  padding: 2.75rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* engraved guilloché line texture, restrained opacity */
+.auth-brand-panel::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background-image:
+    repeating-radial-gradient(
+      circle at 20% 15%,
+      transparent 0,
+      transparent 18px,
+      rgba(212, 180, 92, 0.055) 19px,
+      rgba(212, 180, 92, 0.055) 20px
+    ),
+    repeating-radial-gradient(
+      circle at 90% 85%,
+      transparent 0,
+      transparent 22px,
+      rgba(212, 180, 92, 0.045) 23px,
+      rgba(212, 180, 92, 0.045) 24px
+    );
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .auth-brand-panel {
+    padding: 2rem 1.75rem;
+  }
+}
+
+.auth-brand-top {
+  position: relative;
+  z-index: 1;
+}
+
+/* Seal emblem — the one signature element */
+.auth-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-gold-400);
+  position: relative;
+  color: var(--color-gold-300);
+}
+
+.auth-seal::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 180, 92, 0.45);
+}
+
+.auth-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold-300);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.auth-brand-title {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-paper-50);
+  margin: 0;
+}
+
+.auth-brand-rule {
+  width: 2.75rem;
+  height: 2px;
+  background: var(--color-gold-500);
+  margin: 0.9rem 0 1rem;
+}
+
+.auth-brand-copy {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(247, 242, 231, 0.72);
+  max-width: 26rem;
+}
+
+/* role / jurisdiction list — encodes the three actual user types */
+.auth-role-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(212, 180, 92, 0.3);
+}
+
+.auth-role-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  font-size: 0.8125rem;
+  color: rgba(247, 242, 231, 0.85);
+}
+
+.auth-role-mark {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  color: var(--color-gold-400);
+  flex-shrink: 0;
+}
+
+.auth-brand-bottom {
+  position: relative;
+  z-index: 1;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: rgba(247, 242, 231, 0.45);
+  margin-top: 2rem;
+}
+
+@media (max-width: 860px) {
+  .auth-role-list,
+  .auth-brand-copy {
+    display: none;
+  }
+}
+
+/* ============ FORM PANEL (paper) ============ */
+.auth-form-panel {
+  padding: 2.75rem 2.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--color-paper-50);
+  border-top: 3px solid var(--color-gold-500);
+}
+
+@media (max-width: 860px) {
+  .auth-form-panel {
+    padding: 2rem 1.75rem 2.25rem;
+  }
+}
+
+.auth-form-heading {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--color-ink-900);
+  margin: 0 0 0.35rem;
+}
+
+.auth-form-subheading {
+  font-size: 0.85rem;
+  color: var(--color-ink-400);
+  margin: 0 0 2rem;
+}
+
+/* form fields — official form field look: label above rule, no boxes */
+.auth-field {
+  margin-bottom: 1.35rem;
+}
+
+.auth-label {
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-600);
+  margin-bottom: 0.5rem;
+}
+
+.auth-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.auth-label-row .auth-label {
+  margin-bottom: 0;
+}
+
+.auth-forgot-link {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  color: var(--color-gold-600);
+  text-decoration: none;
+}
+
+.auth-forgot-link:hover {
+  color: var(--color-navy-800);
+  text-decoration: underline;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1.5px solid var(--color-ink-900);
+  opacity: 0.85;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+  padding-bottom: 0.5rem;
+}
+
+.auth-input-wrapper:focus-within {
+  opacity: 1;
+  border-color: var(--color-gold-600);
+  border-bottom-width: 2px;
+}
+
+.auth-input-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--color-ink-400);
+  flex-shrink: 0;
+}
+
+.auth-input-wrapper:focus-within .auth-input-icon {
+  color: var(--color-gold-600);
+}
+
+.auth-input {
+  flex: 1;
+  width: 100%;
+  padding: 0;
+  font-size: 0.9375rem;
+  font-family: "Inter", sans-serif;
+  color: var(--color-ink-900);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: var(--color-ink-400);
+}
+
+.auth-error {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: #a13a3a;
+}
+
+/* button — flat, official, not a pill */
+.auth-btn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-paper-50);
+  background: var(--color-navy-900);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.auth-btn:hover {
+  background: var(--color-navy-800);
+}
+
+.auth-btn:active {
+  background: var(--color-navy-950);
+}
+
+.auth-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-form-footer {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-paper-200);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-ink-400);
+}
+
+.auth-form-footer a {
+  font-weight: 600;
+  color: var(--color-navy-800);
+  text-decoration: none;
+}
+
+.auth-form-footer a:hover {
+  color: var(--color-gold-600);
+  text-decoration: underline;
+}
+
+/* ============ SOLO PANEL (single-column utility pages) ============ */
+.auth-solo-container {
+  width: 100%;
+  max-width: 24rem;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-solo-panel {
+  background: var(--color-paper-50);
+  border: 1px solid var(--color-paper-200);
+  border-top: 3px solid var(--color-gold-500);
+  padding: 2.5rem 2.25rem;
+  box-shadow:
+    0 1px 2px rgba(11, 26, 51, 0.04),
+    0 24px 48px -24px rgba(11, 26, 51, 0.25);
+}
+
+.auth-solo-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-solo-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-gold-600);
+  position: relative;
+  color: var(--color-gold-600);
+}
+
+.auth-solo-seal::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(184, 144, 46, 0.35);
+}
+
+.auth-solo-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold-600);
+  margin: 0 0 0.4rem;
+}
+
+.auth-solo-title {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.375rem;
+  color: var(--color-ink-900);
+  margin: 0 0 0.4rem;
+}
+
+.auth-solo-subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-ink-400);
+  margin: 0;
+}
+
+.auth-solo-footer {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-paper-200);
+  text-align: center;
+  font-size: 0.8125rem;
+}
+
+.auth-solo-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--color-navy-800);
+  text-decoration: none;
+}
+
+.auth-solo-footer a:hover {
+  color: var(--color-gold-600);
+  text-decoration: underline;
+}
+
+
+
+.auth-animate {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}

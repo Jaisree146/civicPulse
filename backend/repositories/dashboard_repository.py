@@ -1,7 +1,9 @@
 from sqlalchemy import func
 
 from config.db import db
+from common.constants import IssueStatus
 from models.complaint import Complaint
+from models.department import Department
 from models.issue import Issue
 
 
@@ -32,7 +34,7 @@ class DashboardRepository:
             )
             .filter(
                 Complaint.citizen_id == citizen_id,
-                Issue.status == "Resolved"
+                Issue.status == IssueStatus.RESOLVED
             )
             .scalar()
         )
@@ -49,7 +51,7 @@ class DashboardRepository:
             .order_by(
                 Complaint.created_at.desc()
             )
-            .limit(5)
+            .limit(6)
             .all()
         )
 
@@ -83,14 +85,72 @@ class DashboardRepository:
                 func.count(Issue.id)
             )
             .filter(
-                Issue.status == "Pending Review"
+                Issue.status == IssueStatus.PENDING_REVIEW
             )
             .scalar()
         )
 
+        assigned = (
+            db.session.query(
+                func.count(Issue.id)
+            )
+            .filter(
+                Issue.status == IssueStatus.ASSIGNED
+            )
+            .scalar()
+        )
+
+        in_progress = (
+            db.session.query(
+                func.count(Issue.id)
+            )
+            .filter(
+                Issue.status == IssueStatus.IN_PROGRESS
+            )
+            .scalar()
+        )
+
+        resolved = (
+            db.session.query(
+                func.count(Issue.id)
+            )
+            .filter(
+                Issue.status == IssueStatus.RESOLVED
+            )
+            .scalar()
+        )
+
+        department_summary = (
+            db.session.query(
+                Department.department_name,
+                func.count(Issue.id).label("count")
+            )
+            .outerjoin(
+                Issue,
+                Department.id == Issue.department_id
+            )
+            .group_by(
+                Department.id,
+                Department.department_name
+            )
+            .all()
+        )
+
+        department_summary = [
+            {
+                "department": row.department_name,
+                "count": row.count
+            }
+            for row in department_summary
+        ]
+
         return {
             "total_issues": total_issues,
-            "pending_review": pending_review
+            "pending_review": pending_review,
+            "assigned": assigned,
+            "in_progress": in_progress,
+            "resolved": resolved,
+            "department_summary": department_summary
         }
 
     @staticmethod
@@ -108,18 +168,42 @@ class DashboardRepository:
             .scalar()
         )
 
+        pending = (
+            db.session.query(
+                func.count(Issue.id)
+            )
+            .filter(
+                Issue.department_id == department_id,
+                Issue.status == IssueStatus.ASSIGNED
+            )
+            .scalar()
+        )
+
+        in_progress = (
+            db.session.query(
+                func.count(Issue.id)
+            )
+            .filter(
+                Issue.department_id == department_id,
+                Issue.status == IssueStatus.IN_PROGRESS
+            )
+            .scalar()
+        )
+
         resolved = (
             db.session.query(
                 func.count(Issue.id)
             )
             .filter(
                 Issue.department_id == department_id,
-                Issue.status == "Resolved"
+                Issue.status == IssueStatus.RESOLVED
             )
             .scalar()
         )
 
         return {
             "assigned": assigned,
+            "pending": pending,
+            "in_progress": in_progress,
             "resolved": resolved
         }
