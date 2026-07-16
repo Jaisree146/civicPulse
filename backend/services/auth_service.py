@@ -107,9 +107,14 @@ class AuthService:
         )
 
         return {
-            "access_token": access_token,
-            "refresh_token": refresh_token
-        }
+    "access_token": access_token,
+    "refresh_token": refresh_token,
+    "user": {
+        "id": user.id,
+        "full_name": user.full_name,
+        "role": user.role.role_name
+    }
+}
 
     @staticmethod
     def refresh_access_token(refresh_token: str) -> dict:
@@ -170,7 +175,12 @@ class AuthService:
         )
 
         return {
-            "access_token": access_token
+        "access_token": access_token,
+        "user": {
+            "id": user.id,
+            "full_name": user.full_name,
+            "role": user.role.role_name
+            }
         }
 
     @staticmethod

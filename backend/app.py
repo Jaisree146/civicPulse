@@ -13,7 +13,7 @@ from routes.complaint_routes import complaint_bp
 from routes.issue_routes import issue_bp
 from routes.dashboard_routes import dashboard_bp
 from routes.chat_routes import chat_bp
-
+from flask_cors import CORS
 from models.department import Department
 from models.user import User
 from models.role import Role
@@ -34,7 +34,11 @@ migrate = Migrate()
 def create_app():
 
     app = Flask(__name__)
-
+    CORS(
+    app,
+    origins=[Settings.FRONTEND_URL],
+    supports_credentials=True
+    )
     app.config.from_object(
         Settings
     )
