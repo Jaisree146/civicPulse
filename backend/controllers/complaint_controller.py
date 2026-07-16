@@ -88,3 +88,30 @@ class ComplaintController:
                 "created_at": complaint.created_at
             }
         )
+    @staticmethod
+    @token_required
+    @roles_required(Roles.CITIZEN)
+    def get_by_number(
+        complaint_number: str
+    ):
+
+        complaint = ComplaintService.get_by_number(
+            complaint_number=complaint_number,
+            citizen_id=g.current_user.id
+        )
+
+        return ApiResponse.success(
+            message="Complaint fetched successfully.",
+            data={
+            "id": complaint.id,
+            "complaint_number": complaint.complaint_number,
+            "title": complaint.title,
+            "description": complaint.description,
+            "latitude": complaint.latitude,
+            "longitude": complaint.longitude,
+            "status": complaint.status,
+            "created_at": complaint.created_at
+            },
+        status_code=200
+    )
+    

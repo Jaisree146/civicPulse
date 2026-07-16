@@ -21,23 +21,34 @@ export const API_ENDPOINTS = {
 
   COMPLAINTS: {
     CREATE: "/api/complaints",
-
     MY: "/api/complaints/my",
-
-    DETAILS: (id: number) => `/api/complaints/${id}`,
-  },
+    DETAILS: (complaintNumber: string) =>
+        `/api/complaints/${complaintNumber}`,
+},
 
   ISSUES: {
     ALL: "/api/issues",
-
     PENDING: "/api/issues/pending",
 
-    MY: "/api/issues/my",
+    DETAILS: (issueNumber: string) =>
+        `/api/issues/${issueNumber}`,
 
-    ASSIGN: (id: number) => `/api/issues/${id}/assign`,
+    ASSIGN: (issueNumber: string) =>
+        `/api/issues/${issueNumber}/assign`,
 
-    STATUS: (id: number) => `/api/issues/${id}/status`,
-  },
+     MY: "/api/issues/my",
+
+    STATUS: (issueNumber: string) =>
+        `/api/issues/${issueNumber}/status`,
+
+},
+
+DEPARTMENTS: {
+  ALL: "/api/departments",
+
+  ISSUES: (departmentId: number) =>
+    `/api/departments/${departmentId}/issues`,
+},
 
   CHAT: {
     SEND: "/api/chat",

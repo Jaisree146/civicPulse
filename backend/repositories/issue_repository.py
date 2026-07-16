@@ -128,7 +128,6 @@ class IssueRepository:
         )
 
     @staticmethod
-    @staticmethod
     def update(
     issue: Issue
     ) -> Issue:
@@ -159,3 +158,28 @@ class IssueRepository:
         db.session.refresh(issue)
 
         return issue
+    
+    @staticmethod
+    def get_by_number(
+    issue_number: str
+) -> Issue | None:
+
+        return Issue.query.filter_by(
+        issue_number=issue_number
+        ).first()
+    
+    @staticmethod
+    def get_by_department(
+    department_id: int
+) -> list[Issue]:
+
+        return (
+        Issue.query
+        .filter_by(
+            department_id=department_id
+        )
+        .order_by(
+            Issue.created_at.desc()
+        )
+        .all()
+    )
