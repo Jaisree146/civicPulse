@@ -35,3 +35,4 @@ class Settings:
     
     ENV = os.getenv("ENV", "development")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+    FRONTEND_URL = os.getenv("FRONTEND_URL")
