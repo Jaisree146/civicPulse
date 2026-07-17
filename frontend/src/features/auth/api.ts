@@ -42,3 +42,6 @@ export async function changePassword(data: ChangePasswordRequest) {
   );
   return response.data;
 }
+export async function logout(): Promise<void> {
+  await axiosInstance.post(API_ENDPOINTS.AUTH.LOGOUT);
+}

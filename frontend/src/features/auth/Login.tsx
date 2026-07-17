@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Mail, Lock, ArrowRight, Landmark } from "lucide-react";
-
+import "./auth.css";
 import { loginSchema, type LoginFormData } from "./validation";
 import { useLogin } from "./hooks";
 import { useAuth } from "../../hooks/useAuth";
@@ -64,24 +64,25 @@ export default function Login() {
               <h1 className="auth-brand-title">CivicPulse</h1>
               <div className="auth-brand-rule" />
               <p className="auth-brand-copy">
-                A shared record between residents and municipal
-                departments — every complaint logged, routed, and
-                tracked to resolution.
+                A shared record between residents and municipal departments —
+                every complaint logged, routed, and tracked to resolution.
               </p>
             </div>
 
             <ul className="auth-role-list">
               <li className="auth-role-item">
                 <span className="auth-role-mark">01</span>
-                Citizens file and track complaints
+                Secure digital access
               </li>
+
               <li className="auth-role-item">
                 <span className="auth-role-mark">02</span>
-                Municipal officers assign and monitor
+                Verified role-based permissions
               </li>
+
               <li className="auth-role-item">
                 <span className="auth-role-mark">03</span>
-                Department officers resolve and close
+                Reliable municipal collaboration
               </li>
             </ul>
 

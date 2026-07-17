@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Lock, KeyRound, ArrowRight, Landmark } from "lucide-react";
-
+import "./auth.css";
 import { changePasswordSchema, type ChangePasswordFormData } from "./validation";
 import { useChangePassword } from "./hooks";
 

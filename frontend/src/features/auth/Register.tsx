@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { Mail, Lock, User, Phone, ArrowRight, Landmark } from "lucide-react";
-
+import "./auth.css";
 import { registerSchema, type RegisterFormData } from "./validation";
 import { useRegister } from "./hooks";
 
