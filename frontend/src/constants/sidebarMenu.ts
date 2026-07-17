@@ -29,7 +29,7 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
     },
     {
       label: "Report Complaint",
-      path: "/citizen/report",
+      path: "/citizen/complaints/new",
       icon: PlusCircle,
     },
     {
@@ -56,10 +56,10 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
       icon: LayoutDashboard,
     },
     {
-      label: "Issues",
-      path: "/municipal/complaints",
-      icon: ClipboardList,
-    },
+    label: "Issues",
+    path: "/municipal/issues",
+    icon: ClipboardList,
+},
     {
       label: "Departments",
       path: "/municipal/departments",
@@ -70,6 +70,7 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
       path: "/profile",
       icon: User,
     },
+
   ],
 
   "Department Officer": [
@@ -80,7 +81,7 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
     },
     {
       label: "Assigned Issues",
-      path: "/department/complaints",
+      path: "/department/issues",
       icon: Briefcase,
     },
     {

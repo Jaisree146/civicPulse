@@ -3,8 +3,10 @@ from flask import g, request
 from common.api_response import ApiResponse
 from services.issue_service import IssueService
 from validators.issue_validator import IssueValidator
+from middleware.rbac_middleware import roles_required
+from middleware.auth_middleware import token_required
 
-
+from common.constants import Roles
 class IssueController:
 
     @staticmethod
@@ -39,6 +41,8 @@ class IssueController:
         )
 
     @staticmethod
+    @token_required
+    @roles_required(Roles.MUNICIPAL_OFFICER)
     def get_pending_review():
 
         issues = IssueService.get_pending_review()
@@ -91,7 +95,9 @@ class IssueController:
         )
 
     @staticmethod
-    def assign_department(issue_id):
+    @token_required
+    @roles_required(Roles.MUNICIPAL_OFFICER)
+    def assign_department(issue_number: str):
 
         data = request.get_json()
 
@@ -100,8 +106,8 @@ class IssueController:
         )
 
         issue = IssueService.assign_department(
-            issue_id=issue_id,
-            department_id=data["department_id"]
+        issue_number=issue_number,
+        department_id=data["department_id"]
         )
 
         return ApiResponse.success(
@@ -135,6 +141,8 @@ class IssueController:
         )
 
     @staticmethod
+    @token_required
+    @roles_required(Roles.DEPARTMENT_OFFICER)
     def get_my_issues():
 
         department_id = g.current_user.department_id
@@ -160,7 +168,9 @@ class IssueController:
         )
 
     @staticmethod
-    def update_status(issue_id):
+    @token_required
+    @roles_required(Roles.DEPARTMENT_OFFICER)
+    def update_status(issue_number: str):
 
         data = request.get_json()
 
@@ -169,10 +179,10 @@ class IssueController:
         )
 
         issue = IssueService.update_status(
-        issue_id=issue_id,
+        issue_number=issue_number,
         status=data["status"],
         current_department_id=g.current_user.department_id
-        )
+    )
 
         return ApiResponse.success(
             message="Issue status updated successfully.",
@@ -181,3 +191,42 @@ class IssueController:
                 "status": issue.status
             }
         )
+    
+    @staticmethod
+    @token_required
+    @roles_required(Roles.MUNICIPAL_OFFICER)
+    
+    def get_by_number(
+    issue_number: str
+):
+
+        issue = IssueService.get_by_number(
+        issue_number
+    )
+
+        return ApiResponse.success(
+        message="Issue fetched successfully.",
+        data={
+            "id": issue.id,
+            "issue_number": issue.issue_number,
+            "summary": issue.summary,
+            "category": issue.category.category_name,
+            "priority": issue.priority,
+            "status": issue.status,
+            "latitude": issue.latitude,
+            "longitude": issue.longitude,
+            "report_count": issue.report_count,
+            "suggested_department": (
+                issue.suggested_department.department_name
+                if issue.suggested_department
+                else None
+            ),
+            "assigned_department": (
+                issue.department.department_name
+                if issue.department
+                else None
+            ),
+            "created_at": issue.created_at
+        },
+        status_code=200
+    )
