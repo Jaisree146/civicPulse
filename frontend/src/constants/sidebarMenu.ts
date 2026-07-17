@@ -1,3 +1,4 @@
+import { MessageCircle } from "lucide-react";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -7,8 +8,8 @@ import {
   User,
   Building2,
   Briefcase,
+  UserCircle,
 } from "lucide-react";
-
 export interface MenuItem {
   label: string;
   path: string;
@@ -33,19 +34,14 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
       icon: PlusCircle,
     },
     {
-      label: "Notifications",
-      path: "/citizen/notifications",
-      icon: Bell,
-    },
-    {
       label: "AI Assistant",
       path: "/citizen/chat",
       icon: Bot,
     },
     {
       label: "Profile",
-      path: "/profile",
-      icon: User,
+      path: "/citizen/profile",
+      icon: UserCircle,
     },
   ],
 
@@ -56,10 +52,10 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
       icon: LayoutDashboard,
     },
     {
-    label: "Issues",
-    path: "/municipal/issues",
-    icon: ClipboardList,
-},
+      label: "Issues",
+      path: "/municipal/issues",
+      icon: ClipboardList,
+    },
     {
       label: "Departments",
       path: "/municipal/departments",
@@ -67,10 +63,14 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
     },
     {
       label: "Profile",
-      path: "/profile",
-      icon: User,
+      path: "/municipal/profile",
+      icon: UserCircle,
     },
-
+    {
+      label: "AI Assistant",
+      path: "/citizen/chat",
+      icon: MessageCircle,
+    },
   ],
 
   "Department Officer": [
@@ -86,8 +86,8 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
     },
     {
       label: "Profile",
-      path: "/profile",
-      icon: User,
+      path: "/department/profile",
+      icon: UserCircle,
     },
   ],
 };

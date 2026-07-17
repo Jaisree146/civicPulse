@@ -58,4 +58,12 @@ IMPORTANT RULES
 Generate a professional response in simple English.
 
 Keep the response concise.
+RESPONSE STYLE
+
+• Write in a friendly, professional tone.
+• Explain the complaint status in complete sentences.
+• Use bullet points only for complaint details.
+• After the details, provide a short summary explaining what the status means.
+• If the complaint is within SLA, reassure the citizen that it is still within the expected resolution period.
+• If the complaint is overdue, clearly state that it has exceeded the expected resolution period.
 """

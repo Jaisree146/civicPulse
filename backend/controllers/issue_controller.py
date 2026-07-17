@@ -194,7 +194,10 @@ class IssueController:
     
     @staticmethod
     @token_required
-    @roles_required(Roles.MUNICIPAL_OFFICER)
+    @roles_required(
+    Roles.MUNICIPAL_OFFICER,
+    Roles.DEPARTMENT_OFFICER
+    )
     
     def get_by_number(
     issue_number: str

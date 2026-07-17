@@ -30,10 +30,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
       </div>
 
       <div className="flex items-center gap-5">
-        <button className="relative rounded-md p-2 text-ink-600 hover:bg-paper-200">
-          <Bell size={20} strokeWidth={1.75} />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-gold-500" />
-        </button>
+       
 
         <div className="flex items-center gap-3 border-l border-paper-200 pl-5">
           <div className="text-right">
