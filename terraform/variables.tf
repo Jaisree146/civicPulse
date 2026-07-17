@@ -64,3 +64,7 @@ variable "gemini_api_key" {
 variable "frontend_url" {
   type = string
 }
+
+variable "frontend_bucket_name" {
+  type = string
+}

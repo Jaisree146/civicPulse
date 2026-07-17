@@ -1,4 +1,4 @@
-import { Menu, Bell } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import { useAuth } from "../../hooks/useAuth";
 
@@ -19,14 +19,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <Menu size={22} />
         </button>
 
-        <div>
-          <h1 className="font-serif text-lg font-semibold text-ink-900">
-            Dashboard
-          </h1>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-ink-400">
-            Welcome back
-          </p>
-        </div>
+        
       </div>
 
       <div className="flex items-center gap-5">
