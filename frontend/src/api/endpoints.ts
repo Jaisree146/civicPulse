@@ -51,6 +51,6 @@ DEPARTMENTS: {
 },
 
   CHAT: {
-    SEND: "/api/chat",
+    CHAT: "/api/chat",
   },
 };

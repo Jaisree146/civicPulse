@@ -24,6 +24,9 @@ import DepartmentIssueDetails from "../features/issues/departments/IssueDetails"
 
 import Departments from "../features/issues/municipal/Departments";
 import DepartmentIssues from "../features/issues/municipal/DepartmentIssues";
+import Profile from "../features/auth/Profile";
+import Chat from "../features/chatbot/Chat";
+import ChangePassword from "../features/auth/ChangePassword";
 
 function Unauthorized() {
   return <h1>Unauthorized</h1>;
@@ -51,12 +54,13 @@ export const router = createBrowserRouter([
       {
         element: <DashboardLayout />,
         children: [
-
+          {
+            path: "/change-password",
+            element: <ChangePassword />,
+          },
 
           {
-            element: (
-              <RoleRoute allowedRoles={["Citizen"]} />
-            ),
+            element: <RoleRoute allowedRoles={["Citizen"]} />,
             children: [
               {
                 path: "/citizen/dashboard",
@@ -74,17 +78,19 @@ export const router = createBrowserRouter([
                 path: "/citizen/complaints/:complaintNumber",
                 element: <ComplaintDetails />,
               },
+              {
+                path: "/citizen/chat",
+                element: <Chat />,
+              },
+              {
+                path: "/citizen/profile",
+                element: <Profile />,
+              },
             ],
           },
 
-         
-
           {
-            element: (
-              <RoleRoute
-                allowedRoles={["Municipal Officer"]}
-              />
-            ),
+            element: <RoleRoute allowedRoles={["Municipal Officer"]} />,
             children: [
               {
                 path: "/municipal/dashboard",
@@ -98,25 +104,23 @@ export const router = createBrowserRouter([
                 path: "/municipal/issues/:issueNumber",
                 element: <MunicipalIssueDetails />,
               },
-                  
               {
                 path: "/municipal/departments",
                 element: <Departments />,
               },
-              {   
-              path: "/municipal/departments/:departmentId",
-              element: <DepartmentIssues />,
-                },
+              {
+                path: "/municipal/departments/:departmentId",
+                element: <DepartmentIssues />,
+              },
+              {
+                path: "/municipal/profile",
+                element: <Profile />,
+              },
             ],
           },
 
-          
           {
-            element: (
-              <RoleRoute
-                allowedRoles={["Department Officer"]}
-              />
-            ),
+            element: <RoleRoute allowedRoles={["Department Officer"]} />,
             children: [
               {
                 path: "/department/dashboard",
@@ -130,9 +134,12 @@ export const router = createBrowserRouter([
                 path: "/department/issues/:issueNumber",
                 element: <DepartmentIssueDetails />,
               },
+              {
+                path: "/department/profile",
+                element: <Profile />,
+              },
             ],
           },
-
         ],
       },
     ],
