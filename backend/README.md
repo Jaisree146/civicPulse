@@ -1,406 +1,293 @@
-## Authentication Module
+# CivicPulse Backend
 
-## 1. Layered Architecture
+Backend service for **CivicPulse**, an AI-Powered Municipal Complaint Management System that enables citizens to report civic issues while assisting municipal officers through AI-powered duplicate detection, complaint management, and an intelligent chat assistant.
 
-* Followed a layered architecture:
+---
 
-  * Routes
-  * Controllers
-  * Services
-  * Repositories
-  * Models
-* Business logic is implemented in the Service layer.
-* Database operations are handled only by the Repository layer.
+# Tech Stack
 
+- Python
+- Flask
+- SQLAlchemy ORM
+- MySQL
+- Flask-Migrate
+- JWT Authentication
+- Google Gemini API
+- Google Gemini Embedding API
+- LangGraph
+- FAISS
+- bcrypt
 
-## 2. Repository Pattern
+---
+# Monolithic Architecture
 
-* Controllers and Services do not access SQLAlchemy models directly.
-* All database operations are performed through repositories.
+The backend is implemented as a modular monolithic architecture, where all modules are deployed as a single application while remaining logically separated into independent components. This architecture was chosen because the application's modules are closely related and share a common database and business domain, making development, testing, deployment, and transaction management simpler. At the same time, the system follows a modular design through layered architecture and separation of concerns, allowing individual modules to be extracted into microservices in the future if scalability or independent deployment becomes necessary.
 
+# Layered Architecture
 
+The backend follows a layered architecture to ensure scalability, maintainability, and separation of concerns.
 
-## 3. Authentication Mechanism
-
-* JWT is used for authentication.
-* Two tokens are generated:
-
-  * Access Token
-  * Refresh Token
-
-
-## 4. Token Storage Strategy
-
-* Access Token is returned in the API response.
-* Refresh Token is stored as an HTTP-only cookie.
-* Refresh Token is never exposed to frontend JavaScript.
-
-
-
-## 5. Refresh Token Persistence
-
-* Refresh Tokens are stored in the database.
-* Only the SHA-256 hash of the refresh token is stored.
-* Plain refresh tokens are never stored.
-
-
-
-## 6. Password Security
-
-* User passwords are hashed using bcrypt before storing.
-* Plain text passwords are never stored in the database.
-
-
-
-## 7. Single Active Session
-
-* Only one active refresh token is allowed per user.
-* On every new login:
-
-  * Existing active refresh token is revoked.
-  * A new refresh token is generated and stored.
-
-
-
-## 8. Role Management
-
-* Citizens can self-register.
-* Municipal Officers and Department Officers cannot self-register.
-* Officer accounts are created by the Admin.
-* Roles are predefined in the database.
-
-
-
-## 9. Standard API Response
-
-* All APIs follow a common response format.
-
-Success Response:
-
-```json
-{
-    "success": true,
-    "message": "...",
-    "data": {}
-}
+```
+Routes
+    │
+Controllers
+    │
+Services
+    │
+Repositories
+    │
+Database
 ```
 
-Error Response:
+### Design Decisions
 
-```json
-{
-    "success": false,
-    "message": "...",
-    "error_code": "...",
-    "errors": {}
-}
-```
+- Business logic is isolated in the Service layer.
+- Controllers only coordinate requests and responses.
+- Database operations are performed exclusively through Repository classes.
+- SQLAlchemy models are never accessed directly from Controllers.
+- Shared exception handling is implemented globally.
+- Common API responses are standardized across all modules.
 
+---
 
+# Authentication Module
 
-## 10. Global Exception Handling
+## Overview
 
-* Introduced a Global Exception Handler.
-* Created a base `AppException`.
-* Module-specific exceptions inherit from `AppException`.
-* Controllers do not contain repetitive exception handling code.
+JWT-based authentication secures all protected APIs while supporting secure session management using Access Tokens and Refresh Tokens.
 
+## Key Design Decisions
 
+- JWT Authentication is implemented using Access Tokens and Refresh Tokens.
+- Access Tokens are returned in API responses.
+- Refresh Tokens are stored as HTTP-only cookies.
+- Refresh Tokens are hashed using SHA-256 before database storage.
+- Plain Refresh Tokens are never persisted.
+- Passwords are securely hashed using bcrypt.
+- Only one active Refresh Token is maintained per user.
+- Every login revokes previously active Refresh Tokens.
+- Citizens can self-register.
+- Municipal Officers and Department Officers are created only by the administrator.
+- Global exception handling provides consistent API error responses.
+- Request validation is separated from business logic.
+- Role-Based Access Control (RBAC) restricts API access based on user roles.
 
-## 11. Request Validation
-
-* Request validation is performed before entering the Service layer.
-* Validation logic is separated from business logic.
-
-
-## 12. Authorization
-
-* Role-Based Access Control (RBAC) will be used.
-* Authentication verifies user identity.
-* Authorization will determine access based on user roles.
-
-
-## 13. HTTP Status Codes
-
-* Standard HTTP status codes are used consistently.
-* Example:
-
-  * 200 - OK
-  * 201 - Created
-  * 400 - Bad Request
-  * 401 - Unauthorized
-  * 404 - Not Found
-  * 409 - Conflict
-  * 500 - Internal Server Error
+---
 
 # Complaint Module
 
-## 1. Complaint Creation
+## Overview
 
-* Citizens can submit complaints through a secured API.
-* Every complaint is associated with the authenticated citizen.
-* Each complaint is assigned a unique complaint number (e.g., `CP000001`).
+Citizens can register and monitor civic complaints through secured APIs.
 
----
+Each complaint represents an individual citizen report and is uniquely identified using a complaint number.
 
-## 2. Complaint Information
+## Key Design Decisions
 
-Each complaint contains:
-
-* Complaint Number
-* Title
-* Description
-* Latitude
-* Longitude
-* Status
-* Processed Flag
-* Created At
-* Updated At
+- Complaint numbers are generated automatically.
+- Every complaint belongs to the authenticated citizen.
+- Complaint ownership is verified before allowing access.
+- Geographic coordinates (Latitude and Longitude) are stored for every complaint.
+- Complaint creation and complaint processing are intentionally separated.
+- Complaint information serves as input for duplicate detection.
+- Validation is performed before business logic execution.
 
 ---
 
-## 3. Complaint Tracking
+# Duplicate Detection Module
 
-Implemented APIs to:
+## Overview
 
-* Create a complaint
-* View all complaints submitted by the authenticated citizen
-* View a specific complaint by its ID
+The Duplicate Detection module prevents multiple issues from being created for the same real-world civic problem.
 
----
+Instead of treating every complaint as a new issue, semantically similar complaints are grouped under a single Issue.
 
-## 4. Complaint Ownership
+## Key Design Decisions
 
-* Citizens can access only their own complaints.
-* Unauthorized access to another citizen's complaint is restricted.
-
----
-
-## 5. Request Validation
-
-The following validations are performed before processing a complaint:
-
-* Required field validation
-* Title length validation
-* Description length validation
-* Latitude validation
-* Longitude validation
+- Duplicate detection is performed against Issues rather than Complaints.
+- Google Gemini Embedding API (`gemini-embedding-001`) generates semantic embeddings.
+- FAISS performs efficient nearest-neighbor similarity search.
+- Issue embeddings are stored persistently after issue creation.
+- Only newly submitted complaints require embedding generation.
+- Similarity Threshold determines whether an Issue should be reused.
+- Duplicate complaints increase the Issue Report Count.
+- Individual complaints remain preserved for citizen tracking.
+- Semantic similarity is used instead of keyword matching.
 
 ---
 
-## 6. Business Logic
+# Issue Module
 
-The Service layer is responsible for:
+## Overview
 
-* Generating unique complaint numbers
-* Creating complaints
-* Retrieving citizen complaints
-* Retrieving complaint details
-* Validating complaint ownership
+Issues represent unique civic problems identified from one or more citizen complaints.
 
----
+Multiple complaints may reference the same Issue.
 
-## 7. Repository Operations
+## Key Design Decisions
 
-The Complaint Repository provides:
-
-* Create Complaint
-* Get Latest Complaint
-* Get Complaint by ID
-* Get Complaints by Citizen ID
-* Update Complaint
-
+- Issues are independent of complaints.
+- Multiple complaints can be linked to a single Issue.
+- Every Issue receives a unique Issue Number.
+- Municipal Officers review newly created Issues.
+- Department assignment occurs at the Issue level.
+- Department Officers update Issue status until resolution.
+- Report Count reflects the number of affected citizens.
 
 ---
 
-## 9. Security
+# Dashboard Module
 
-* JWT Authentication is required for all Complaint APIs.
-* Role-Based Access Control (RBAC) is enforced.
-* Complaint ownership is verified before returning complaint details.
+## Overview
+
+Role-specific dashboards provide summarized operational insights.
+
+Implemented dashboards:
+
+- Citizen Dashboard
+- Municipal Officer Dashboard
+- Department Officer Dashboard
+
+## Key Design Decisions
+
+- Dashboard statistics are generated using aggregate SQL queries.
+- Dashboard data is filtered according to the authenticated user's role.
+- RBAC prevents unauthorized dashboard access.
+- Only required summary data is returned to improve performance.
 
 ---
-## Issue Module
 
-1. Issue Management
-Issues represent unique civic problems identified from one or more complaints.
-Each issue is assigned a unique issue number (e.g., ISS000001).
-Multiple complaints can be linked to the same issue.
+# AI Chat Assistant Module
 
-2. Issue Information
+## Overview
 
-Each issue contains:
+The AI Chat Assistant enables citizens to interact with CivicPulse using natural language.
 
-Issue Number
-Category
-Department
-Summary
-Priority
-Status
-Report Count
-Created At
-Updated At
+The chatbot is implemented as a **Skill-Based Agent** using **LangGraph**.
 
-3. Issue Workflow
-Newly created issues are marked as Pending Review.
-Municipal Officers review and assign issues to departments.
-Department Officers update the issue status until resolution.
+Rather than allowing the LLM to make business decisions, backend services execute all application logic while Gemini generates user-friendly responses.
 
-4. Business Logic
-The Service layer is responsible for:
+## Supported Skills
 
-Creating issues
-Generating unique issue numbers
-Assigning departments
-Updating issue status
-Incrementing report count
-Retrieving issues by department
+- Complaint Status
+- Municipal Policy Query
+- Complaint Registration Guidance
+- General Assistance
 
-5. Repository Operations
-The Issue Repository provides:
+## Key Design Decisions
 
-Create Issue
-Get Latest Issue
-Get Issue by ID
-Get All Issues
-Get Pending Review Issues
-Get Issues by Department
-Update Issue
+- LangGraph orchestrates the complete conversational workflow.
+- User requests are routed using rule-based intent detection.
+- Each business capability is implemented as an independent Skill.
+- Skills communicate with backend services through Tool classes.
+- Google Gemini API is responsible only for response generation.
+- Business logic is never delegated to the LLM.
+- Complaint retrieval, authorization, SLA evaluation, notification triggering, and policy retrieval are deterministic backend operations.
+- Session-level conversational context is maintained using LangGraph MemorySaver.
+- Persistent conversation storage was intentionally not implemented because only session-level context is required.
+- Each conversation is isolated using a unique Thread ID.
+- New skills can be introduced without modifying existing chatbot functionality.
 
-6. Security
-JWT Authentication is required.
-Municipal Officers can:
-View all issues
-View pending issues
-Assign departments
-Department Officers can:
-View assigned issues
-Update issue status
+---
 
+# Retrieval-Augmented Generation (RAG)
 
+## Overview
 
-## Dashboard Module
+The RAG module enables the chatbot to answer municipal policy questions using dynamically retrieved policy documents.
 
-1. Dashboard Overview
+## Key Design Decisions
 
-The Dashboard module provides summarized statistics based on the authenticated user's role.
+- Municipal policies are maintained outside application code.
+- Policies are converted into vector embeddings using Google Gemini Embedding API.
+- FAISS stores policy embeddings for efficient semantic retrieval.
+- Original policy documents are stored separately because FAISS stores only vectors.
+- Policy embeddings are generated once and persisted.
+- User queries are embedded and matched against the FAISS index.
+- Retrieved policy context is supplied to Gemini.
+- Dynamic retrieval reduces hallucinations and improves maintainability.
 
-Three dashboards are implemented:
+---
 
-Citizen Dashboard
-Municipal Officer Dashboard
-Department Officer Dashboard
+# Dashboard Security
 
+The application enforces Role-Based Access Control.
 
-2. Citizen Dashboard
+### Citizen
 
-Displays:
+- Register
+- Login
+- Submit Complaints
+- View Own Complaints
+- Chat with AI Assistant
 
-Total Complaints
-Resolved Complaints
-Five most recent complaints
+### Municipal Officer
 
+- Review Issues
+- Assign Departments
+- View Municipal Dashboard
 
-3. Municipal Dashboard
+### Department Officer
 
-Displays:
+- View Assigned Issues
+- Update Issue Status
+- View Department Dashboard
 
-Total Issues
-Pending Review Issues
+---
 
+# Master Data
 
-4. Department Dashboard
+The following master data is seeded during application setup.
 
-Displays:
+### Roles
 
-Assigned Issues
-Resolved Issues
+- Citizen
+- Municipal Officer
+- Department Officer
 
+### Departments
 
-5. Database Queries
+- Roads
+- Drainage
+- Water Supply
+- Solid Waste Management
+- Street Lighting
 
-Dashboard statistics are generated using:
+### Categories
 
-SQLAlchemy ORM
-Aggregate Functions (COUNT)
-JOIN operations
-Filtering
-Ordering
-Limiting results
+- Road Damage
+- Garbage Overflow
+- Water Leakage
+- Drainage Issue
+- Street Light Failure
 
+---
 
-6. Security
-JWT Authentication is required.
-Dashboard access is restricted using Role-Based Access Control (RBAC).
-Each role can access only its respective dashboard.
+# API Design Principles
 
+- Layered Architecture
+- Repository Pattern
+- Service Layer Pattern
+- Role-Based Access Control
+- JWT Authentication
+- Standardized API Responses
+- Global Exception Handling
+- Request Validation
+- Separation of Concerns
+- Modular Design
+- AI-assisted Duplicate Detection
+- Retrieval-Augmented Generation
+- Skill-Based Agent Architecture
 
-Master Data
-1. Roles
-The following roles are predefined:
+---
 
-Citizen
-Municipal Officer
-Department Officer
+# Future Enhancements
 
-2. Departments
-Departments are pre-populated using seed scripts.
-
-Examples include:
-
-Roads
-Drainage
-Water Supply
-Solid Waste Management
-Street Lighting
-
-3. Categories
-Complaint categories are also seeded.
-Examples include:
-
-Road Damage
-Garbage Overflow
-Water Leakage
-Drainage Issue
-Street Light Failure
-
-4. Seed Scripts
-Implemented database seed scripts for:
-
-Roles
-Departments
-Categories
-
-AI Chat Assistant Module
-Overview
-
-The AI Chat Assistant is implemented as a Skill-Based Agent using LangGraph. It enables citizens to interact with the system using natural language to check complaint status, retrieve municipal policies, receive complaint registration guidance, and ask general civic-related questions.
-
-The assistant uses the Google Gemini API to generate natural-language responses based on structured information retrieved from backend services.
-
-Supported Skills
-Complaint Status
-Municipal Policy Query
-Complaint Registration Guidance
-General Assistance
-Key Design Decisions
-The assistant follows a Skill-Based Architecture, where each business capability is implemented as an independent skill, making the system modular and easier to extend.
-LangGraph orchestrates the execution flow by routing requests to the appropriate skill based on the detected user intent.
-Google Gemini API is used to generate clear and user-friendly responses from structured backend data.
-Retrieval-Augmented Generation (RAG) is used to retrieve municipal policies dynamically instead of embedding policy information directly into prompts, improving maintainability and response accuracy.
-Complaint SLA Monitoring is performed automatically. If a complaint exceeds its expected resolution time, the corresponding department is notified, and the notification status is recorded to prevent duplicate notifications.
-Critical business operations such as complaint retrieval, duplicate detection, authorization, SLA evaluation, and department notifications are implemented in backend services instead of the LLM, ensuring deterministic and reliable behavior.
-The LLM is responsible only for natural-language response generation and is not involved in business decision-making.
-LangGraph Memory preserves conversation context, enabling seamless multi-turn interactions without requiring users to repeat previously shared information.
-Duplicate Detection Module
-Overview
-
-The Duplicate Detection module identifies whether a newly submitted complaint corresponds to an existing civic issue. Instead of creating duplicate issues for the same real-world problem, the system links related complaints to a single Issue, reducing redundant municipal work and improving issue tracking.
-
-Key Design Decisions
-Duplicate detection is performed against Issues rather than individual complaints, allowing multiple complaints to be associated with a single civic problem.
-Google Gemini Embedding API (gemini-embedding-001) is used to convert complaint descriptions into vector embeddings for semantic similarity comparison.
-FAISS is used as the vector database to perform efficient nearest-neighbor similarity searches.
-A configurable similarity threshold determines whether a complaint should be linked to an existing issue or result in the creation of a new issue.
-When a duplicate is identified, the complaint is linked to the existing issue and the issue's report count is incremented instead of creating another issue record.
-This design minimizes duplicate municipal work orders while preserving individual complaint records for each citizen.
+- Automatic complaint categorization using AI.
+- AI-assisted department assignment.
+- Complaint priority prediction.
+- Multilingual chatbot support.
+- Voice-enabled complaint registration.
+- Real-time notification services.
+- Conversation persistence using Redis or Database-backed memory.
+- Analytics and reporting dashboards.
