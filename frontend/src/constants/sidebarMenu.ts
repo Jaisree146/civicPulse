@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+
 import {
   LayoutDashboard,
   ClipboardList,
@@ -63,11 +63,6 @@ export const sidebarMenus: Record<string, MenuItem[]> = {
       label: "Profile",
       path: "/municipal/profile",
       icon: UserCircle,
-    },
-    {
-      label: "AI Assistant",
-      path: "/citizen/chat",
-      icon: MessageCircle,
     },
   ],
 
