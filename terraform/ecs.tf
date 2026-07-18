@@ -70,8 +70,13 @@ resource "aws_ecs_service" "backend" {
   desired_count = 1
   launch_type   = "FARGATE"
 
-  network_configuration {
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
 
+  network_configuration {
     subnets = [
       aws_subnet.public.id
     ]
