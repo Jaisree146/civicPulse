@@ -7,17 +7,19 @@ from config.settings import Settings
 from handlers.error_handler import (
     register_error_handlers
 )
-
+from common.logger import logger
 from routes.auth_routes import auth_bp
 from routes.complaint_routes import complaint_bp
 from routes.issue_routes import issue_bp
 from routes.dashboard_routes import dashboard_bp
 from routes.chat_routes import chat_bp
-
+from flask_cors import CORS
 from models.department import Department
 from models.user import User
 from models.role import Role
 from models.category import Category
+from services.complaint_service import ComplaintService
+from routes.department_routes import department_bp
 
 from ai.rag.policy_faiss_service import (
     PolicyFaissService
@@ -34,7 +36,11 @@ migrate = Migrate()
 def create_app():
 
     app = Flask(__name__)
-
+    CORS(
+    app,
+    origins=[Settings.FRONTEND_URL],
+    supports_credentials=True
+    )
     app.config.from_object(
         Settings
     )
@@ -67,7 +73,9 @@ def create_app():
     app.register_blueprint(
         chat_bp
     )
-
+    app.register_blueprint(
+    department_bp
+    )
     register_error_handlers(
         app
     )
@@ -78,8 +86,15 @@ def create_app():
 
         PolicyLoader.load()
 
+        try:
+            ComplaintService.reprocess_unprocessed()
+        except Exception:
+            logger.exception(
+            "Failed to reprocess pending complaints during startup.")
+
     return app
 
+    
 
 app = create_app()
 

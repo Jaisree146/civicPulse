@@ -23,37 +23,46 @@ class ComplaintService:
 
     @staticmethod
     def create(
-        citizen_id: int,
-        title: str,
-        description: str,
-        latitude: float,
-        longitude: float
-    ) -> Complaint:
+    citizen_id: int,
+    title: str,
+    description: str,
+    latitude: float,
+    longitude: float
+) -> Complaint:
 
         complaint = Complaint(
 
-            complaint_number=ComplaintService.generate_complaint_number(),
+        complaint_number=ComplaintService.generate_complaint_number(),
 
-            citizen_id=citizen_id,
+        citizen_id=citizen_id,
 
-            title=title,
+        title=title,
 
-            description=description,
+        description=description,
 
-            latitude=latitude,
+        latitude=latitude,
 
-            longitude=longitude
+        longitude=longitude
 
-        )
+    )
 
         complaint = ComplaintRepository.create(
             complaint
         )
 
-        from ai.processing.complaint_processor import ComplaintProcessor
+        try:
 
-        ComplaintProcessor.process(
-        complaint
+            from ai.processing.complaint_processor import ComplaintProcessor
+
+            ComplaintProcessor.process(
+            complaint
+            )
+
+        except Exception:
+
+            logger.exception(
+            "AI processing failed for complaint %s",
+            complaint.complaint_number
         )
 
         return complaint

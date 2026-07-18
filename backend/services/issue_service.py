@@ -108,16 +108,16 @@ class IssueService:
 
     @staticmethod
     def assign_department(
-        issue_id: int,
-        department_id: int
+    issue_number: str,
+    department_id: int
     ) -> Issue:
 
-        issue = IssueService.get_by_id(
-            issue_id
+        issue = IssueService.get_by_number(
+        issue_number
         )
 
         department = DepartmentRepository.get_by_id(
-            department_id
+        department_id
         )
 
         if department is None:
@@ -125,11 +125,10 @@ class IssueService:
 
         issue.department_id = department_id
         issue.suggested_department_id = department_id
-
         issue.status = IssueStatus.ASSIGNED
 
         return IssueRepository.update(
-            issue
+        issue
         )
 
     @staticmethod
@@ -188,33 +187,34 @@ class IssueService:
 
     @staticmethod
     def update_status(
-        issue_id: int,
-        status: str,
-        current_department_id: int
-    ) -> Issue:
+    issue_number: str,
+    status: str,
+    current_department_id: int
+) -> Issue:
 
-        issue = IssueService.get_by_id(
-            issue_id
-        )
+        issue = IssueService.get_by_number(
+        issue_number
+    )
 
         if issue.department_id != current_department_id:
 
             raise AuthenticationException(
 
-                message="You are not authorized to update this issue.",
+            message="You are not authorized to update this issue.",
 
-                status_code=403,
+            status_code=403,
 
-                error_code="AUTH_010"
+            error_code="AUTH_010"
 
-            )
+        )
 
         issue.status = status
 
         return IssueRepository.update(
-            issue
+        issue
         )
-
+    
+    
     @staticmethod
     def increment_report_count(
         issue_id: int
@@ -275,3 +275,17 @@ class IssueService:
         issue.sla_notification_sent = True
 
         return IssueRepository.update(issue)
+    
+    @staticmethod
+    def get_by_number(
+    issue_number: str
+) -> Issue:
+
+        issue = IssueRepository.get_by_number(
+        issue_number
+    )
+
+        if issue is None:
+            raise IssueNotFoundException()
+
+        return issue

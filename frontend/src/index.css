@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap");
+
+@theme {
+  /* Official / civic palette — deep navy, engraved gold, warm paper */
+  --color-navy-950: #081326;
+  --color-navy-900: #0b1a33;
+  --color-navy-800: #123057;
+  --color-navy-700: #1c4074;
+  --color-navy-600: #2a5490;
+
+  --color-gold-300: #e6cd85;
+  --color-gold-400: #d4b45c;
+  --color-gold-500: #b8902e;
+  --color-gold-600: #96741f;
+
+  --color-paper-50: #fbf8f1;
+  --color-paper-100: #f7f2e7;
+  --color-paper-200: #ede3cd;
+
+  --color-ink-900: #1b2230;
+  --color-ink-600: #4a5164;
+  --color-ink-400: #7b8298;
+
+  /* kept for compatibility with any existing primary-* references */
+  --color-primary-50: var(--color-gold-300);
+  --color-primary-100: var(--color-gold-300);
+  --color-primary-200: var(--color-gold-300);
+  --color-primary-300: var(--color-gold-400);
+  --color-primary-400: var(--color-gold-400);
+  --color-primary-500: var(--color-gold-500);
+  --color-primary-600: var(--color-gold-600);
+  --color-primary-700: var(--color-navy-800);
+  --color-primary-800: var(--color-navy-900);
+  --color-primary-900: var(--color-navy-950);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-animate {
+    animation: none;
+  }
+}

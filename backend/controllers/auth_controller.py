@@ -46,7 +46,8 @@ class AuthController:
         response, status_code = ApiResponse.success(
             message="Login successful.",
             data={
-                "access_token": tokens["access_token"]
+            "access_token": tokens["access_token"],
+            "user": tokens["user"]
             },
             status_code=200
         )
@@ -79,7 +80,8 @@ class AuthController:
         return ApiResponse.success(
             message="Access token refreshed successfully.",
             data={
-                "access_token": token["access_token"]
+                "access_token": token["access_token"],
+                "user":token["user"]
             },
             status_code=200
         )
