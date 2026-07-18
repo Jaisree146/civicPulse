@@ -11,9 +11,6 @@ Terraform is responsible for provisioning and managing the cloud infrastructure,
 The infrastructure provisions the following AWS resources:
 
 - Amazon VPC
-- Public and Private Subnets
-- Internet Gateway
-- Route Tables and Associations
 - Security Groups
 - Amazon ECS Cluster
 - Amazon ECS Service (AWS Fargate)
@@ -33,7 +30,6 @@ terraform/
 ├── provider.tf
 ├── variables.tf
 ├── outputs.tf
-├── networking.tf
 ├── iam.tf
 ├── ecr.tf
 ├── ecs.tf
@@ -121,7 +117,7 @@ Example:
 ```hcl
 env          = "development"
 db_name      = "civicpulse"
-db_user      = "admin"
+db_user      = "xxx"
 db_password  = "********"
 frontend_url = "http://localhost:5173"
 ```
