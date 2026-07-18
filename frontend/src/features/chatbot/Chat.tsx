@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { v4 as uuidv4 } from "uuid";
 
 import { useChat } from "./hooks";
 
@@ -10,14 +11,13 @@ import ChatInput from "./components/ChatInput";
 import type { ChatMessage } from "./types";
 
 export default function Chat() {
-
   const chatMutation = useChat();
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       sender: "assistant",
       text:
         "Hello! 👋 I can help you with complaint status and municipal policy questions.",
@@ -26,27 +26,17 @@ export default function Chat() {
   ]);
 
   useEffect(() => {
-
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-
   }, [messages]);
 
-  async function handleSend(
-    message: string
-  ) {
-
+  async function handleSend(message: string) {
     const userMessage: ChatMessage = {
-
-      id: crypto.randomUUID(),
-
+      id: uuidv4(),
       sender: "user",
-
       text: message,
-
       createdAt: new Date(),
-
     };
 
     setMessages((previous) => [
@@ -55,58 +45,38 @@ export default function Chat() {
     ]);
 
     try {
-
-      const response =
-        await chatMutation.mutateAsync({
-          message,
-        });
+      const response = await chatMutation.mutateAsync({
+        message,
+      });
 
       const assistantMessage: ChatMessage = {
-
-        id: crypto.randomUUID(),
-
+        id: uuidv4(),
         sender: "assistant",
-
         text: response,
-
         createdAt: new Date(),
-
       };
 
       setMessages((previous) => [
         ...previous,
         assistantMessage,
       ]);
-
     } catch (error) {
-
       if (error instanceof AxiosError) {
-
         toast.error(
           error.response?.data?.message ??
             "Unable to get response."
         );
-
       } else {
-
-        toast.error(
-          "Something went wrong."
-        );
-
+        toast.error("Something went wrong.");
       }
-
     }
-
   }
 
   return (
-
     <div className="flex h-[80vh] flex-col rounded-xl border border-paper-200 bg-paper-50 shadow-sm">
 
       {/* Header */}
-
       <div className="border-b border-paper-200 p-5">
-
         <h1 className="font-serif text-2xl font-bold text-ink-900">
           CivicPulse Assistant
         </h1>
@@ -114,13 +84,10 @@ export default function Chat() {
         <p className="mt-1 text-sm text-ink-500">
           Ask about your complaint status or municipal policies.
         </p>
-
       </div>
 
       {/* Suggested Questions */}
-
       <div className="flex flex-wrap gap-3 border-b border-paper-200 p-4">
-
         <button
           onClick={() =>
             handleSend(
@@ -142,49 +109,31 @@ export default function Chat() {
         >
           Policy Details
         </button>
-
       </div>
 
       {/* Messages */}
-
       <div className="flex-1 space-y-4 overflow-y-auto p-5">
-
         {messages.map((message) => (
-
           <ChatBubble
-
             key={message.id}
-
             message={message}
-
           />
-
         ))}
 
         {chatMutation.isPending && (
-
           <div className="text-sm italic text-ink-500">
             Assistant is typing...
           </div>
-
         )}
 
         <div ref={bottomRef} />
-
       </div>
 
       {/* Input */}
-
       <ChatInput
-
         onSend={handleSend}
-
         disabled={chatMutation.isPending}
-
       />
-
     </div>
-
   );
-
 }
