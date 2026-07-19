@@ -28,8 +28,9 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        const BASEURL = window.location.origin;
         const response = await axiosInstance.post(
-          API_ENDPOINTS.AUTH.REFRESH,
+          BASEURL+API_ENDPOINTS.AUTH.REFRESH,
           {},
           { withCredentials: true }
         );
