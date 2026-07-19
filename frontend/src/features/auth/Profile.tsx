@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { User, Shield, Hash, KeyRound, ChevronRight } from "lucide-react";
+import { User, Shield, KeyRound, ChevronRight } from "lucide-react";
 
 import { useAuth } from "../../hooks/useAuth";
 
@@ -34,13 +34,6 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Hash className="h-5 w-5 text-orange-600" />
-            <div>
-              <p className="text-sm text-gray-500">User ID</p>
-              <p className="font-medium text-gray-900">{user?.id}</p>
-            </div>
-          </div>
 
         </div>
       </div>
