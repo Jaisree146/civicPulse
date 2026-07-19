@@ -1,6 +1,6 @@
 import axiosInstance from "./axios";
 import { tokenService } from "../services/tokenService";
-import axios from "axios";
+
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -28,8 +28,8 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const response = await axios.post(
-          import.meta.env.VITE_API_BASE_URL + API_ENDPOINTS.AUTH.REFRESH,
+        const response = await axiosInstance.post(
+          API_ENDPOINTS.AUTH.REFRESH,
           {},
           { withCredentials: true }
         );
