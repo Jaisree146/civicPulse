@@ -5,8 +5,6 @@ from common.constants import IssueStatus
 from models.complaint import Complaint
 from models.department import Department
 from models.issue import Issue
-
-
 class DashboardRepository:
 
     @staticmethod
@@ -80,45 +78,26 @@ class DashboardRepository:
             .scalar()
         )
 
-        pending_review = (
+        status_counts = (
             db.session.query(
-                func.count(Issue.id)
+                Issue.status,
+                func.count(Issue.id).label("count")
             )
-            .filter(
-                Issue.status == IssueStatus.PENDING_REVIEW
+            .group_by(
+                Issue.status
             )
-            .scalar()
+            .all()
         )
 
-        assigned = (
-            db.session.query(
-                func.count(Issue.id)
-            )
-            .filter(
-                Issue.status == IssueStatus.ASSIGNED
-            )
-            .scalar()
-        )
+        counts = {
+            IssueStatus.PENDING_REVIEW: 0,
+            IssueStatus.ASSIGNED: 0,
+            IssueStatus.IN_PROGRESS: 0,
+            IssueStatus.RESOLVED: 0
+        }
 
-        in_progress = (
-            db.session.query(
-                func.count(Issue.id)
-            )
-            .filter(
-                Issue.status == IssueStatus.IN_PROGRESS
-            )
-            .scalar()
-        )
-
-        resolved = (
-            db.session.query(
-                func.count(Issue.id)
-            )
-            .filter(
-                Issue.status == IssueStatus.RESOLVED
-            )
-            .scalar()
-        )
+        for row in status_counts:
+            counts[row.status] = row.count
 
         department_summary = (
             db.session.query(
@@ -146,10 +125,10 @@ class DashboardRepository:
 
         return {
             "total_issues": total_issues,
-            "pending_review": pending_review,
-            "assigned": assigned,
-            "in_progress": in_progress,
-            "resolved": resolved,
+            "pending_review": counts[IssueStatus.PENDING_REVIEW],
+            "assigned": counts[IssueStatus.ASSIGNED],
+            "in_progress": counts[IssueStatus.IN_PROGRESS],
+            "resolved": counts[IssueStatus.RESOLVED],
             "department_summary": department_summary
         }
 
@@ -168,42 +147,32 @@ class DashboardRepository:
             .scalar()
         )
 
-        pending = (
+        status_counts = (
             db.session.query(
-                func.count(Issue.id)
+                Issue.status,
+                func.count(Issue.id).label("count")
             )
             .filter(
-                Issue.department_id == department_id,
-                Issue.status == IssueStatus.ASSIGNED
+                Issue.department_id == department_id
             )
-            .scalar()
+            .group_by(
+                Issue.status
+            )
+            .all()
         )
 
-        in_progress = (
-            db.session.query(
-                func.count(Issue.id)
-            )
-            .filter(
-                Issue.department_id == department_id,
-                Issue.status == IssueStatus.IN_PROGRESS
-            )
-            .scalar()
-        )
+        counts = {
+            IssueStatus.ASSIGNED: 0,
+            IssueStatus.IN_PROGRESS: 0,
+            IssueStatus.RESOLVED: 0
+        }
 
-        resolved = (
-            db.session.query(
-                func.count(Issue.id)
-            )
-            .filter(
-                Issue.department_id == department_id,
-                Issue.status == IssueStatus.RESOLVED
-            )
-            .scalar()
-        )
+        for row in status_counts:
+            counts[row.status] = row.count
 
         return {
             "assigned": assigned,
-            "pending": pending,
-            "in_progress": in_progress,
-            "resolved": resolved
+            "pending": counts[IssueStatus.ASSIGNED],
+            "in_progress": counts[IssueStatus.IN_PROGRESS],
+            "resolved": counts[IssueStatus.RESOLVED]
         }

@@ -7,7 +7,7 @@ from repositories.issue_repository import IssueRepository
 
 class DuplicateDetector:
 
-    SIMILARITY_THRESHOLD = 0.88
+    SIMILARITY_THRESHOLD = 0.75
     MAX_DISTANCE_KM = 2.0
 
     @staticmethod
@@ -62,6 +62,7 @@ class DuplicateDetector:
         scores, indices = index.search(query, 1)
 
         similarity = float(scores[0][0])
+        print(f"Similarity Score: {similarity:.4f}")
 
         if similarity >= DuplicateDetector.SIMILARITY_THRESHOLD:
             return {

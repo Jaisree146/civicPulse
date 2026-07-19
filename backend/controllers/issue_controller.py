@@ -56,7 +56,8 @@ class IssueController:
                     "summary": issue.summary,
                     "priority": issue.priority,
                     "report_count": issue.report_count,
-                    "category": issue.category.category_name
+                    "category": issue.category.category_name,
+                    "created_at":issue.created_at
                 }
                 for issue in issues
             ]

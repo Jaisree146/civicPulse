@@ -122,22 +122,3 @@ class ComplaintProcessor:
         )
 
         return issue
-
-
-if __name__ == "__main__":
-
-    from app import app
-
-    with app.app_context():
-
-        complaint = ComplaintService.create(
-            citizen_id=1,
-            title="Large pothole near bus stand",
-            description="There is a huge pothole near the bus stand causing accidents.",
-            latitude=22.5726,
-            longitude=88.3639
-        )
-
-        print(complaint.id)
-        print(complaint.issue_id)
-        print(complaint.processed)
