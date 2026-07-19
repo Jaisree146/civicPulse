@@ -4,11 +4,11 @@ import { type AuthContextType, type User } from "../types/auth";
 
 import { tokenService } from "../services/tokenService";
 
-import axios from "axios";
 import { API_ENDPOINTS } from "../api/endpoints";
 
 export const AuthContext = createContext<AuthContextType | null>(null);
-
+import { CLOUDFRONT_BASEURL } from "../api/axios";
+import axios from "axios";
 interface Props {
   children: ReactNode;
 }
@@ -19,12 +19,13 @@ export function AuthProvider({ children }: Props) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-
+   
   useEffect(() => {
     const restoreSession = async () => {
       try {
+
         const response = await axios.post(
-          import.meta.env.VITE_API_BASE_URL + API_ENDPOINTS.AUTH.REFRESH,
+         CLOUDFRONT_BASEURL+API_ENDPOINTS.AUTH.REFRESH,
           {},
           { withCredentials: true }
         );

@@ -1,4 +1,4 @@
-import axiosInstance from "./axios";
+import axiosInstance, { CLOUDFRONT_BASEURL } from "./axios";
 import { tokenService } from "../services/tokenService";
 
 
@@ -17,6 +17,7 @@ axiosInstance.interceptors.request.use(
 );
 
 import { API_ENDPOINTS } from "./endpoints";
+import axios from "axios";
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -28,9 +29,9 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const BASEURL = window.location.origin;
-        const response = await axiosInstance.post(
-          BASEURL+API_ENDPOINTS.AUTH.REFRESH,
+      
+        const response = await axios.post(
+         CLOUDFRONT_BASEURL+API_ENDPOINTS.AUTH.REFRESH,
           {},
           { withCredentials: true }
         );
