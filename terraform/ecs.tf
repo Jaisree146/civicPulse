@@ -63,12 +63,16 @@ resource "aws_ecs_task_definition" "backend" {
 }
 
 resource "aws_ecs_service" "backend" {
-  name            = "civicpulse-backend-service"
-  cluster         = aws_ecs_cluster.backend.id
+
+  name = "civicpulse-backend-service"
+
+  cluster = aws_ecs_cluster.backend.id
+
   task_definition = aws_ecs_task_definition.backend.arn
 
   desired_count = 1
-  launch_type   = "FARGATE"
+
+  launch_type = "FARGATE"
 
   lifecycle {
     ignore_changes = [
@@ -77,8 +81,10 @@ resource "aws_ecs_service" "backend" {
   }
 
   network_configuration {
+
     subnets = [
-      aws_subnet.public.id
+      aws_subnet.public.id,
+      aws_subnet.public2.id
     ]
 
     security_groups = [
@@ -88,7 +94,17 @@ resource "aws_ecs_service" "backend" {
     assign_public_ip = true
   }
 
+  load_balancer {
+
+    target_group_arn = aws_lb_target_group.backend.arn
+
+    container_name = "backend"
+
+    container_port = 5000
+  }
+
   depends_on = [
+    aws_lb_listener.backend,
     aws_iam_role_policy_attachment.ecs_task_execution_role_policy
   ]
 }
